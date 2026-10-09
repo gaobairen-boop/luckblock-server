@@ -6,8 +6,10 @@ import time
 import hashlib
 import urllib.parse
 from flask import Flask, request, jsonify
+from flask_cors import CORS # 🛡️ 真實商業防跨線阻擋安全鎖
 
 app = Flask(__name__)
+CORS(app) # 🛡️ 徹底打通雲端與你桌面遊戲的金融大門！
 DB_FILE = "server_database.json"
 
 MERCHANT_ID = "2000132"
@@ -30,12 +32,6 @@ def load_db():
 
 def save_db(data):
     with open(DB_FILE, "w", encoding="utf-8") as f: json.dump(data, f, ensure_ascii=False, indent=2)
-
-def generate_check_mac_value(params):
-    sorted_params = sorted(params.items(), key=lambda x: x)
-    raw_str = f"HashKey={HASH_KEY}&" + "&".join([f"{k}={v}" for k, v in sorted_params]) + f"&HashIV={HASH_IV}"
-    url_encoded = urllib.parse.quote_plus(raw_str).lower()
-    return hashlib.sha256(url_encoded.encode('utf-8')).hexdigest().upper()
 
 def simulate_cascade():
     grid = [[random.choice(ITEMS) for _ in range(6)] for _ in range(6)]
