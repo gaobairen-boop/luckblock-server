@@ -1,0 +1,279 @@
+[Uploading index.html…]()
+<!DOCTYPE html>
+<html lang="zh-TW" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雷霆神域 - 數位內容與線上娛樂平台</title>
+    <!-- 引入字體與圖標 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #0b071e;
+            color: #f3f4f6;
+            line-height: 1.6;
+        }
+        /* 導覽列 */
+        nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 50;
+            background: rgba(11, 7, 30, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(147, 51, 234, 0.3);
+        }
+        .nav-container {
+            max-width: 1280px; margin: 0 auto; padding: 0 20px;
+            height: 80px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 900; background: linear-gradient(to right, #c084fc, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; align-items: center; gap: 30px; }
+        .nav-links a { color: #f3f4f6; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: #c084fc; }
+        .btn-theme {
+            background: linear-gradient(to right, #9333ea, #2563eb);
+            color: white; padding: 10px 24px; border-radius: 9999px;
+            font-weight: 700; text-decoration: none; box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+            transition: transform 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-theme:hover { transform: scale(1.05); }
+
+        /* Banner */
+        header {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 120px 20px 80px; position: relative; overflow: hidden;
+            background: radial-gradient(circle at center, rgba(147, 51, 234, 0.15) 0%, rgba(11, 7, 30, 0.95) 70%);
+        }
+        .badge {
+            display: inline-block; padding: 6px 16px; border-radius: 9999px; font-size: 13px; font-weight: bold;
+            background: rgba(147, 51, 234, 0.1); color: #c084fc; border: 1px solid rgba(147, 51, 234, 0.4);
+            margin-bottom: 20px;
+        }
+        h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 900; line-height: 1.2; margin-bottom: 20px; text-shadow: 0 0 30px rgba(147, 51, 234, 0.4); }
+        h1 span { background: linear-gradient(to right, #c084fc, #60a5fa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-desc { max-width: 700px; margin: 0 auto 30px; color: #cbd5e1; font-size: 18px; }
+        .hero-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .btn-secondary {
+            background: rgba(30, 27, 75, 0.8); color: #e5e7eb; padding: 14px 28px; border-radius: 12px;
+            border: 1px solid #4338ca; font-weight: bold; text-decoration: none; transition: background 0.3s;
+        }
+        .btn-secondary:hover { background: #3730a3; }
+
+        /* 特色區塊 */
+        section { padding: 100px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .section-title h2 { font-size: 36px; font-weight: 800; margin-bottom: 10px; color: #fff; }
+        .section-title p { color: #9ca3af; }
+        
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card {
+            background: #171033; padding: 40px 30px; border-radius: 20px;
+            border: 1px solid rgba(147, 51, 234, 0.2); transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(147, 51, 234, 0.2); }
+        .card-icon { width: 60px; height: 60px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+        .card h3 { font-size: 20px; font-weight: 700; margin-bottom: 15px; color: #c084fc; }
+        .card p { color: #9ca3af; font-size: 15px; }
+
+        /* 數位服務與方案說明 */
+        .products-section { background: #120c29; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 900px; margin: 0 auto; }
+        .product-card { 
+            background: #1a103c; border: 1px solid #4338ca; border-radius: 16px; padding: 40px 30px; text-align: center;
+            display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.3s;
+        }
+        .product-card:hover { transform: translateY(-5px); border-color: #9333ea; }
+        .gift-tag {
+            background: rgba(147, 51, 234, 0.2); color: #c084fc; font-size: 13px; font-weight: bold;
+            padding: 6px 12px; border-radius: 8px; margin: 15px 0; display: inline-block; border: 1px solid rgba(147, 51, 234, 0.4);
+        }
+
+        /* 下載專區 */
+        .download-section { background: #0b071e; text-align: center; }
+        .download-box {
+            max-width: 700px; margin: 0 auto; background: linear-gradient(135deg, #1e1b4b, #171033);
+            border: 2px solid #9333ea; border-radius: 20px; padding: 40px; box-shadow: 0 0 30px rgba(147, 51, 234, 0.2);
+        }
+
+        /* 提醒文字 */
+        .notice-box {
+            max-width: 900px; margin: 30px auto 0; background: rgba(59, 130, 246, 0.1); 
+            border: 1px solid rgba(59, 130, 246, 0.3); padding: 15px 20px; border-radius: 12px;
+            text-align: center; color: #60a5fa; font-size: 14px;
+        }
+
+        /* 客服與聯絡資訊區 */
+        .support-section { text-align: center; background: #120c29; }
+        .support-box {
+            max-width: 700px; margin: 0 auto; background: #171033; border: 1px solid #4338ca;
+            padding: 40px; border-radius: 20px;
+        }
+
+        /* 頁尾 */
+        footer { padding: 40px 20px; text-align: center; border-top: 1px solid #1f1b3a; color: #6b7280; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-gamepad" style="color: #c084fc;"></i>
+                <span>雷霆神域 數位服務</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">平台特色</a>
+                <a href="#services">數位方案</a>
+                <a href="#download">遊戲下載</a>
+                <a href="#support" class="btn-theme">客服與支援</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner 主視覺 -->
+    <header>
+        <div>
+            <span class="badge">🎮 數位娛樂內容與互動體驗服務</span>
+            <h1>雷霆神域<br><span>數位內容與解謎休閒平台</span></h1>
+            <p class="hero-desc">提供多樣化的休閒益智闖關、數位點數方案與趣味互動體驗。打造安全、穩定且合規的數位娛樂環境。</p>
+            <div class="hero-btns">
+                <a href="#services" class="btn-theme" style="padding: 14px 32px; font-size: 16px;">
+                    <i class="fa-solid fa-box-open" style="margin-right: 8px;"></i> 查看數位服務方案
+                </a>
+                <a href="#download" class="btn-secondary">下載遊戲主程式</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 平台特色 -->
+    <section id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>平台核心優勢</h2>
+                <p>致力於提供高品質的數位內容與完善的客戶服務</p>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon" style="background: rgba(147, 51, 234, 0.2); color: #c084fc;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3>安全交易環境</h3>
+                    <p>串接正規且符合資安標準的支付管道，保障每位用戶的資料與交易安全。</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3>即時客服支援</h3>
+                    <p>專業的客服團隊隨時為您解答有關帳號、數位內容與方案開通的各項疑問。</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3>快速開通服務</h3>
+                    <p>完成線上方案選擇與支付後，系統自動化處理，點數與數位內容即時解鎖。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 數位服務與方案說明 -->
+    <section id="services" class="products-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>數位內容方案</h2>
+                <p>選購適合您的平台點數與會員體驗方案</p>
+            </div>
+            
+            <div class="product-grid">
+                <!-- 150 元方案 -->
+                <div class="product-card">
+                    <div>
+                        <h3 style="color: #c084fc; font-size: 22px; margin-bottom: 10px;">基礎休閒方案</h3>
+                        <p style="color: #9ca3af; font-size: 14px; margin-bottom: 10px;">解鎖平台基礎益智關卡與趣味互動點數包。</p>
+                        <div class="gift-tag"><i class="fa-solid fa-gift mr-1"></i> 贈送經典小禮物</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 26px; font-weight: bold; color: #fff; margin-bottom: 20px;">NT$ 150</div>
+                        <!-- 點擊後跳轉 LINE Pay 付款連結 -->
+                        <a href="https://pay.line.me/portal/tw/main" target="_blank" class="btn-theme" style="width: 100%;">
+                            <i class="fa-solid fa-wallet mr-2"></i> 進入遊戲・LINE Pay 結帳
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 500 元方案 -->
+                <div class="product-card" style="border-color: #9333ea; background: #22154d;">
+                    <div>
+                        <h3 style="color: #c084fc; font-size: 22px; margin-bottom: 10px;">進階尊榮方案</h3>
+                        <p style="color: #9ca3af; font-size: 14px; margin-bottom: 10px;">解sle全系列數位內容、專屬道具與優先客服禮遇。</p>
+                        <div class="gift-tag" style="background: rgba(234, 179, 8, 0.2); color: #facc15; border-color: rgba(234, 179, 8, 0.4);"><i class="fa-solid fa-crown mr-1"></i> 經典小禮物加大禮包</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 26px; font-weight: bold; color: #fff; margin-bottom: 20px;">NT$ 500</div>
+                        <!-- 點擊後跳轉 LINE Pay 付款連結 -->
+                        <a href="https://pay.line.me/portal/tw/main" target="_blank" class="btn-theme" style="width: 100%;">
+                            <i class="fa-solid fa-wallet mr-2"></i> 進入遊戲・LINE Pay 結帳
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提醒文字 -->
+            <div class="notice-box">
+                <i class="fa-solid fa-circle-exclamation mr-1"></i> <strong>貼心提醒：</strong>完成付款後系統將自動派發品項至遊戲中，若 5 分鐘內未入帳，請立即聯繫客服協助處理！
+            </div>
+        </div>
+    </section>
+
+    <!-- 遊戲下載專區 -->
+    <section id="download" class="download-section">
+        <div class="container">
+            <div class="download-box">
+                <i class="fa-solid fa-download" style="font-size: 40px; color: #c084fc; margin-bottom: 15px;"></i>
+                <h2 style="font-size: 28px; font-weight: bold; margin-bottom: 10px; color: #fff;">下載主程式</h2>
+                <p style="color: #9ca3af; font-size: 14px; margin-bottom: 25px;">
+                    下載遊戲主程式檔案（目前提供 Python 原始碼版本，未來將提供獨立執行檔）
+                </p>
+                <!-- 下載按鈕：可將 href 指向你的 遊戲.py 或壓縮檔 -->
+                <a href="遊戲.py" download class="btn-theme" style="padding: 14px 32px; font-size: 16px;">
+                    <i class="fa-solid fa-file-arrow-down mr-2"></i> 下載遊戲程式 (遊戲.py)
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 客服與聯絡資訊 -->
+    <section id="support" class="support-section">
+        <div class="container">
+            <div class="support-box">
+                <i class="fa-solid fa-building-shield" style="font-size: 40px; color: #c084fc; margin-bottom: 15px;"></i>
+                <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #fff;">客服中心與聯絡資訊</h2>
+                <p style="color: #9ca3af; font-size: 14px; line-height: 1.8; margin-bottom: 20px;">
+                    營運商名稱：雷霆神域數位娛樂平台<br>
+                    客服信箱：support@thunderslot.example（請替換為你的真實信箱）<br>
+                    服務時間：週一至週日 10:00 - 22:00<br>
+                    退款與服務政策：本平台提供數位內容與點數服務，若對方案有任何問題，請於購買後 7 日內聯繫客服協助處理。
+                </p>
+                <div style="font-size: 13px; color: #60a5fa;">
+                    <i class="fa-solid fa-circle-check"></i> 支援 LINE Pay 安全快速結帳
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer>
+        <p>&copy; 2026 雷霆神域 數位娛樂平台. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
