@@ -20,15 +20,18 @@ SUPER_BOSS_MASTER_KEY = "SUPER_BOSS_999_TOKEN"
 ITEMS = ["藍寶石", "紅寶石", "綠寶石", "獅子", "老虎", "老鷹", "鑽石", "飛機"]
 
 BASE_SCORES = {
-    "藍寶石": 2, "紅寶石": 2, "綠寶石": 2,      
+    "藍寶石": 2, "红寶石": 2, "綠寶石": 2,      
     "獅子": 4, "老虎": 4, "老鷹": 4,            
-    "鑽石": 10,                                
-    "飛機": 20                                 
+    "鑽石": 10,                                 
+    "飛機": 20                                  
 }
 
 def load_db():
     if not os.path.exists(DB_FILE): return {}
-    with open(DB_FILE, "r", encoding="utf-8") as f: return json.load(f)
+    try:
+        with open(DB_FILE, "r", encoding="utf-8") as f: return json.load(f)
+    except:
+        return {}
 
 def save_db(data):
     with open(DB_FILE, "w", encoding="utf-8") as f: json.dump(data, f, ensure_ascii=False, indent=2)
@@ -69,8 +72,15 @@ def spin():
     uid = req.get("uid")
     try: bet = float(req.get("bet", 0))
     except: return jsonify({"status": "fail", "msg": "❌ 格式錯誤"})
+    
     db = load_db()
+    if uid not in db:
+        return jsonify({"status": "fail", "msg": "❌ 找不到此使用者"})
+    
     user = db[uid]
+    if user.get("status") == "banned":
+        return jsonify({"status": "fail", "msg": "❌ 此帳號已被封鎖"})
+        
     if user["coins"] < bet: return jsonify({"status": "fail", "msg": "❌ 餘額不足"})
     user["coins"] -= bet
     roll = random.randint(1, 100)
@@ -102,6 +112,12 @@ def register():
     username = req.get("username", "").strip()
     password = req.get("password", "").strip()
     if not username or not password: return jsonify({"status": "fail", "msg": "❌ 不能為空！"})
+    
+    # 檢查帳號是否重複
+    for uinfo in db.values():
+        if uinfo["username"] == username:
+            return jsonify({"status": "fail", "msg": "❌ 帳號已被註冊"})
+
     uid = str(random.randint(100000, 999999))
     db[uid] = {"username": username, "password": password, "coins": 50000.0, "status": "normal"}
     save_db(db)
@@ -115,8 +131,61 @@ def login():
     password = req.get("password", "").strip()
     for uid, uinfo in db.items():
         if uinfo["username"] == username and uinfo["password"] == password:
+            if uinfo.get("status") == "banned":
+                return jsonify({"status": "fail", "msg": "❌ 此帳號已被封鎖"})
             return jsonify({"status": "success", "uid": uid, "username": username, "coins": uinfo["coins"]})
     return jsonify({"status": "fail", "msg": "❌ 帳號或密碼錯誤"})
+
+# ================= 🛡️ 管理員後台控制通道 =================
+@app.route("/admin/add_gold", methods=["GET"])
+def admin_add_gold():
+    master_key = request.args.get("master_key")
+    if master_key != SUPER_BOSS_MASTER_KEY:
+        return "❌ 權限不足 (Master Key 錯誤)", 403
+    
+    uid = request.args.get("uid")
+    try:
+        amount = float(request.args.get("amount", 0))
+    except:
+        return "❌ 金額格式錯誤", 400
+
+    db = load_db()
+    if uid not in db:
+        return f"❌ 找不到 UID 為 {uid} 的玩家", 404
+
+    db[uid]["coins"] += amount
+    save_db(db)
+    return f"✅ 成功！玩家 {db[uid]['username']} (UID: {uid}) 目前金幣已更新為: {db[uid]['coins']}"
+
+@app.route("/admin/ban", methods=["GET"])
+def admin_ban():
+    master_key = request.args.get("master_key")
+    if master_key != SUPER_BOSS_MASTER_KEY:
+        return "❌ 權限不足", 403
+    
+    uid = request.args.get("uid")
+    db = load_db()
+    if uid not in db:
+        return f"❌ 找不到 UID 為 {uid} 的玩家", 404
+
+    db[uid]["status"] = "banned"
+    save_db(db)
+    return f"🔒 已經成功封鎖玩家: {db[uid]['username']} (UID: {uid})"
+
+@app.route("/admin/unban", methods=["GET"])
+def admin_unban():
+    master_key = request.args.get("master_key")
+    if master_key != SUPER_BOSS_MASTER_KEY:
+        return "❌ 權限不足", 403
+    
+    uid = request.args.get("uid")
+    db = load_db()
+    if uid not in db:
+        return f"❌ 找不到 UID 為 {uid} 的玩家", 404
+
+    db[uid]["status"] = "normal"
+    save_db(db)
+    return f"🔓 已經解除封鎖玩家: {db[uid]['username']} (UID: {uid})"
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
