@@ -194,27 +194,53 @@ class App(tk.Tk):
                         fireworks = ["🎆", "✨", "🔥", "💥", "⚡", "🌟"]
                         for r in range(6):
                             for c in range(6):
-請謹慎使用程式碼。
-if current_grid[r][c] == target:
-self.grid_labels[r][c].config(text=random.choice(fireworks) + "煙火", bg="#FFFFFF", fg=flash_color)
-self.lbl_msg.config(text="🎆 轟隆隆！全螢幕大煙火連環引爆！正在震碎方塊中...")
-# 停留 450 毫秒展示特大煙火，再進到第三影格（瀑布掉落補位）
-self.after(450, lambda: self.play_cascade_animation(history, final_grid, final_coins, final_msg, index + 1))
-flash_effect()
-elif wave["action"] == "drop":
-# ⬇️ 第三階段：煙火散去，上方物件像瀑布般刷刷刷掉落下來補滿空位！
-self.update_ui(current_grid)
-self.lbl_msg.config(text="⬇️ 煙火散去！空位已由上方全新方塊如瀑布般完美掉落補位！")
-self.after(450, lambda: self.play_cascade_animation(history, final_grid, final_coins, final_msg, index + 1))
-else:
-self.update_ui(current_grid)
-self.after(200, lambda: self.play_cascade_animation(history, final_grid, final_coins, final_msg, index + 1))
-else:
-self.coins = final_coins
-self.msg = final_msg
-self.update_ui(final_grid)
-def clear_frame(self):
-for widget in self.winfo_children(): widget.destroy()
-if name == "main":
-app = App()
-app.mainloop()
+        # 🔥 第一階段：專屬光芒連續閃爍 3 次 (0.4 秒)
+        def flash_effect(step=0):
+            if step < 6:
+                current_color = flash_color if step % 2 == 0 else "#FFFFFF"
+                for r in range(6):
+                    for c in range(6):
+                        if current_grid[r][c] == target:
+                            self.grid_labels[r][c].config(bg=current_color, fg="#000000")
+                self.after(80, lambda: flash_effect(step + 1))
+            else:
+                # 🔥 第二階段：大爆炸！全螢幕施放「特大煙火大震動」！
+                fireworks = ["🎆", "✨", "🔥", "💥", "⚡", "🌟"]
+                for r in range(6):
+                    for c in range(6):
+                        if current_grid[r][c] == target:
+                            self.grid_labels[r][c].config(text=random.choice(fireworks) + "煙火", bg="#FFFFFF", fg=flash_color)
+                        else:
+                            self.grid_labels[r][c].config(text=current_grid[r][c], bg=COLORS.get(current_grid[r][c], "#FFFFFF"), fg="white")
+                
+                self.lbl_msg.config(text="🎆 轟隆隆！全螢幕大煙火連環引爆！正在震碎方塊中...")
+                # 停留 450 毫秒展示特大煙火，再進到第三影格
+                self.after(450, lambda: self.play_cascade_animation(history, final_grid, final_coins, final_msg, index + 1))
+        
+        if index < len(history):
+            wave = history[index]
+            current_grid = wave["grid"]
+            
+            if wave["action"] == "clear":
+                flash_effect()
+                
+            elif wave["action"] == "drop":
+                # ⬇️ 第三階段：煙火散去，上方物件像瀑布般刷刷刷掉落下來補滿空位！
+                self.update_ui(current_grid)
+                self.lbl_msg.config(text="⬇️ 煙火散去！空位已由上方全新方塊如瀑布般完美掉落補位！")
+                self.after(450, lambda: self.play_cascade_animation(history, final_grid, final_coins, final_msg, index + 1))
+            else:
+                self.update_ui(current_grid)
+                self.after(200, lambda: self.play_cascade_animation(history, final_grid, final_coins, final_msg, index + 1))
+        else:
+            self.coins = final_coins
+            self.msg = final_msg
+            self.update_ui(final_grid)
+
+    def clear_frame(self):
+        for widget in self.winfo_children(): 
+            widget.destroy()
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
