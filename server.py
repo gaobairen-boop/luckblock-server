@@ -15,14 +15,15 @@ HASH_KEY = "5294y06JbISpM5x9"
 HASH_IV = "v77hoKGq4kWxPxWD"
 SUPER_BOSS_MASTER_KEY = "SUPER_BOSS_999_TOKEN"
 
+# 💎 完美修正錯字（藍寶石）
 ITEMS = ["藍寶石", "紅寶石", "綠寶石", "獅子", "老虎", "老鷹", "鑽石", "飛機"]
 
-# 📊 【老闆指示：底分全面縮小 5~10 倍，防止莊家虧損！】
+# 📊 【老闆指示：底分全面縮小，防止莊家虧損！】
 BASE_SCORES = {
-    "藍寶石": 2, "紅寶石": 2, "綠寶石": 2,      # 便宜級：從 15 點砍到剩 2 點
-    "獅子": 5, "老虎": 5, "老鷹": 5,            # 中等級：從 50 點砍到剩 5 點
-    "鑽石": 15,                                # 高等級：從 150 點砍到剩 15 點
-    "飛機": 30                                 # 最高等：從 500 點大砍到剩 30 點
+    "藍寶石": 2, "紅寶石": 2, "綠寶石": 2,      
+    "獅子": 5, "老虎": 5, "老鷹": 5,            
+    "鑽石": 15,                                
+    "飛機": 30                                 
 }
 
 def load_db():
@@ -33,7 +34,7 @@ def save_db(data):
     with open(DB_FILE, "w", encoding="utf-8") as f: json.dump(data, f, ensure_ascii=False, indent=2)
 
 def generate_check_mac_value(params):
-    sorted_params = sorted(params.items(), key=lambda x: x)
+    sorted_params = sorted(params.items(), key=lambda x: x[0])
     raw_str = f"HashKey={HASH_KEY}&" + "&".join([f"{k}={v}" for k, v in sorted_params]) + f"&HashIV={HASH_IV}"
     url_encoded = urllib.parse.quote_plus(raw_str).lower()
     return hashlib.sha256(url_encoded.encode('utf-8')).hexdigest().upper()
@@ -94,7 +95,7 @@ def payment_callback():
         for uid, user in db.items():
             if user.get("pending_trade", {}).get("trade_no") == trade_no:
                 twd = user["pending_trade"]["amount"]
-                added_coins = twd * 100.0  # 🌟 老闆修正：1元台幣固定換100金幣
+                added_coins = twd * 100.0  
                 user["coins"] += added_coins
                 user["pending_trade"] = {}
                 save_db(db)
@@ -112,19 +113,18 @@ def spin():
     user = db[uid]
     if user["coins"] < bet: return jsonify({"status": "fail", "msg": "❌ 餘額不足！"})
         
-    user["coins"] -= bet  # 扣除本金
+    user["coins"] -= bet  
     
-    # 🔒 【極致收水風控】：中獎率直接大砍到只剩 15%！莊家立於不敗之地
     roll = random.randint(1, 100)
     total_base_score = 0
     multiplier_pool = []
     
+    # 🔒 15% 機率中獎局
     if roll <= 15:
-        # 🟢 15% 機率中獎：只給 1 次基礎消除，且倍率球極小化！
         lucky_item = random.choice(ITEMS)
         total_base_score = BASE_SCORES[lucky_item] * (bet / 20.0)
-        # 調整倍率球池：只給極小的 2, 3, 4, 5 倍，50倍和20倍機率大砍到幾乎不出！
-        multiplier_pool.append(random.choice([2, 2, 2, 3, 3, 4, 5]))
+        # 掉落低倍率球 2, 3, 4, 5
+        multiplier_pool.append(random.choice([2, 3, 4, 5]))
     
     total_multiplier = sum(multiplier_pool) if multiplier_pool else 1
     if total_multiplier > 68: total_multiplier = 68
@@ -133,9 +133,8 @@ def spin():
     
     if win_amount > 0:
         grid = [[random.choice(ITEMS) for _ in range(6)] for _ in range(6)]
-        msg = f"💥 觸發消除！\n🔹 消除底分: {total_base_score:,.1f} | 🔴 倍率球: x{total_multiplier}\n🎉 贏得金幣: +{win_amount:,.2f}"
+        msg = f"💥 觸發連鎖消除！\n🔹 消除底分: {total_base_score:,.1f} | 🔴 倍率球: x{total_multiplier}\n🎉 贏得金幣: +{win_amount:,.2f}"
     else:
-        # 🔴 85% 絕對死局：強制清洗盤面，絕不讓任何方塊滿 8 個
         while True:
             grid = [[random.choice(ITEMS) for _ in range(6)] for _ in range(6)]
             if all([item for row in grid for item in row].count(i) < 8 for i in ITEMS): break
